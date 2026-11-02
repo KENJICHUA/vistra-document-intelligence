@@ -1,0 +1,6 @@
+paddleocr>=3.0,<4.0
+paddlepaddle
+opencv-python
+pymupdf
+numpy
+pydantic
