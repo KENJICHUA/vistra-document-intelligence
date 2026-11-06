@@ -8,7 +8,7 @@ from typing import Union
 
 from .classification import DocumentClassifier
 from .engine import OCREngine
-from .extractors import GenericExtractor, LaboratoryExtractor
+from .extractors import GenericExtractor, LaboratoryExtractor, MedicalCertificateExtractor
 from .formatter import OCRResult, ResultFormatter
 from .loader import DocumentLoader
 from .preprocessor import ImagePreprocessor
@@ -67,4 +67,6 @@ class OCRPipeline:
     def _get_extractor(document_type: str):
         if document_type == "laboratory_result":
             return LaboratoryExtractor()
+        if document_type == "medical_certificate":
+            return MedicalCertificateExtractor()
         return GenericExtractor()
