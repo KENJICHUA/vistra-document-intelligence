@@ -8,7 +8,15 @@ from typing import Union
 
 from .classification import DocumentClassifier
 from .engine import OCREngine
-from .extractors import GenericExtractor, LaboratoryExtractor, MedicalCertificateExtractor
+from .extractors import (
+    DentalExtractor,
+    GenericExtractor,
+    ImagingReportExtractor,
+    LaboratoryExtractor,
+    MedicalCertificateExtractor,
+    PrescriptionExtractor,
+    VitalSignsExtractor,
+)
 from .formatter import OCRResult, ResultFormatter
 from .loader import DocumentLoader
 from .preprocessor import ImagePreprocessor
@@ -69,4 +77,12 @@ class OCRPipeline:
             return LaboratoryExtractor()
         if document_type == "medical_certificate":
             return MedicalCertificateExtractor()
+        if document_type == "vital_signs":
+            return VitalSignsExtractor()
+        if document_type == "prescription":
+            return PrescriptionExtractor()
+        if document_type == "imaging_report":
+            return ImagingReportExtractor()
+        if document_type == "dental_record":
+            return DentalExtractor()
         return GenericExtractor()
