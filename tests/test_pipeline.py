@@ -18,3 +18,4 @@ def test_pipeline_image() -> None:
     assert result.page_count == 1
     assert "Patient Name" in result.raw_text
     assert result.pages[0].lines
+    assert result.document_type == "laboratory_result"

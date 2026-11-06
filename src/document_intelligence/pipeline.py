@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 from typing import Union
 
+from .classification import DocumentClassifier
 from .engine import OCREngine
 from .formatter import OCRResult, ResultFormatter
 from .loader import DocumentLoader
@@ -21,6 +23,7 @@ class OCRPipeline:
         self.loader = DocumentLoader()
         self.preprocessor = ImagePreprocessor(max_side=max_side, deskew=deskew)
         self.engine = OCREngine(lang=lang)
+        self.classifier = DocumentClassifier()
         self.formatter = ResultFormatter()
 
     def process(self, file_path: Union[str, Path]) -> OCRResult:
@@ -40,4 +43,12 @@ class OCRPipeline:
                 }
             )
 
-        return self.formatter.format(path.name, pages)
+        raw_text = "\n\n".join(page["text"] for page in pages if page["text"])
+        classification = self.classifier.classify(raw_text)
+
+        return self.formatter.format(
+            filename=path.name,
+            pages=pages,
+            document_id=str(uuid.uuid4()),
+            classification=classification,
+        )
