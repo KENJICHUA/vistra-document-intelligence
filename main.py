@@ -33,6 +33,10 @@ def main() -> None:
     print("\nOCR completed successfully!\n")
     print(f"Document type: {result.document_type} ({result.document_type_confidence})")
     print(f"Pages processed: {result.page_count}")
+    if result.warnings:
+        print("Warnings:")
+        for warning in result.warnings:
+            print(f"  - {warning}")
     print(f"Output saved to: {output_path}\n")
     print("Extracted text:\n")
     print(result.raw_text)

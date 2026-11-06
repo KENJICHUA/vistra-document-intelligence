@@ -8,6 +8,7 @@ from typing import Union
 
 from .classification import DocumentClassifier
 from .engine import OCREngine
+from .extractors import GenericExtractor, LaboratoryExtractor
 from .formatter import OCRResult, ResultFormatter
 from .loader import DocumentLoader
 from .preprocessor import ImagePreprocessor
@@ -46,9 +47,24 @@ class OCRPipeline:
         raw_text = "\n\n".join(page["text"] for page in pages if page["text"])
         classification = self.classifier.classify(raw_text)
 
-        return self.formatter.format(
+        result = self.formatter.format(
             filename=path.name,
             pages=pages,
             document_id=str(uuid.uuid4()),
             classification=classification,
         )
+
+        extractor = self._get_extractor(classification.document_type.value if hasattr(classification.document_type, "value") else str(classification.document_type))
+        extraction = extractor.extract(result)
+        result.patient = extraction.get("patient", {})
+        result.document_date = extraction.get("document_date")
+        result.extracted_data = extraction.get("extracted_data", {})
+        result.warnings = extraction.get("warnings", [])
+
+        return result
+
+    @staticmethod
+    def _get_extractor(document_type: str):
+        if document_type == "laboratory_result":
+            return LaboratoryExtractor()
+        return GenericExtractor()

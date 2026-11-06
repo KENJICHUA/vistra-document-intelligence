@@ -31,6 +31,8 @@ class OCRResult(BaseModel):
     page_count: int
     pages: List[PageResult] = Field(default_factory=list)
     raw_text: str = ""
+    patient: Dict[str, Any] = Field(default_factory=dict)
+    document_date: Optional[Dict[str, Any]] = None
     extracted_data: Dict[str, Any] = Field(default_factory=dict)
     warnings: List[str] = Field(default_factory=list)
 
