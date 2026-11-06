@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import find_document_date, find_patient_name
 
@@ -12,7 +13,7 @@ class GenericExtractor(BaseExtractor):
     document_type = "generic"
 
     def extract(self, document: Any) -> Dict[str, Any]:
-        warnings = ["Document type is unknown or unsupported; returning raw OCR text only."]
+        warnings = [make_warning("GENERIC_EXTRACTION", "extracted_data", "Document type is unknown or unsupported; returning raw OCR text only.")]
         patient_name = find_patient_name(document)
         document_date = find_document_date(document)
         return {

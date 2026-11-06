@@ -1,0 +1,8 @@
+{
+  "image": "samples/images/dental_record.png",
+  "document_type": "dental_record",
+  "fields": {
+    "patient.name.value": "John Doe",
+    "extracted_data.teeth": 2
+  }
+}

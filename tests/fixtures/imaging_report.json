@@ -1,0 +1,14 @@
+{
+  "image": "samples/images/imaging_report.png",
+  "document_type": "imaging_report",
+  "fields": {
+    "patient.name.value": "John Doe",
+    "extracted_data.modality.value": "ultrasound",
+    "extracted_data.body_region.value": "abdomen",
+    "extracted_data.examination_date.value": "10/30/2026",
+    "extracted_data.report_date.value": "10/31/2026",
+    "extracted_data.findings.value": "Normal liver",
+    "extracted_data.impression.value": "No abnormalities",
+    "extracted_data.provider.value": "Dr. Lee"
+  }
+}

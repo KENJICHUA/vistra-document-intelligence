@@ -1,0 +1,10 @@
+{
+  "image": "samples/images/prescription.png",
+  "document_type": "prescription",
+  "fields": {
+    "patient.name.value": "John Doe",
+    "extracted_data.prescriber.value": "Dr. Smith",
+    "extracted_data.clinic.value": "VISTRA Clinic",
+    "extracted_data.medications": 1
+  }
+}

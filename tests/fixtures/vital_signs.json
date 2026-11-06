@@ -1,0 +1,12 @@
+{
+  "image": "samples/images/vital_signs.png",
+  "document_type": "vital_signs",
+  "fields": {
+    "patient.name.value": "John Doe",
+    "extracted_data.blood_pressure.systolic": 120,
+    "extracted_data.blood_pressure.diastolic": 80,
+    "extracted_data.heart_rate.value": 72,
+    "extracted_data.temperature.value": "36.5",
+    "extracted_data.spo2.value": 98
+  }
+}

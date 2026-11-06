@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import find_document_date, find_patient_name, iter_lines, make_field
 
@@ -59,11 +60,11 @@ class LaboratoryExtractor(BaseExtractor):
 
             if confidence < 0.7:
                 warnings.append(
-                    f"Low OCR confidence ({confidence:.2f}) for laboratory row: {text}"
+                    make_warning("LOW_OCR_CONFIDENCE", f"extracted_data.tests[{len(tests)}]", f"Low OCR confidence ({confidence:.2f}) for laboratory row: {text}")
                 )
 
         if not tests:
-            warnings.append("No laboratory test rows could be extracted.")
+            warnings.append(make_warning("NO_LAB_TESTS", "extracted_data.tests", "No laboratory test rows could be extracted."))
 
         patient_name = find_patient_name(document)
         document_date = find_document_date(document)

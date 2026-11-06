@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import DATE_PATTERNS, find_document_date, find_patient_name, iter_lines, make_field
 
@@ -28,16 +29,16 @@ class VitalSignsExtractor(BaseExtractor):
             lines, ["respiratory rate", "respiration rate", "rr", "resp rate", "respiratory"]
         )
         temperature = self._extract_temperature(lines)
-        spo2 = self._extract_labeled_number(lines, ["spo2", "oxygen saturation", "o2 sat", "saturation"])
+        spo2 = self._extract_labeled_number(lines, ["spo2", "sp02", "sp0", "spo0", "oxygen saturation", "o2 sat", "saturation"])
         height = self._extract_measurement(lines, ["height", "ht"], r"(cm|m|in|ft|inch|inches)")
         weight = self._extract_measurement(lines, ["weight", "wt"], r"(kg|lb|lbs|g|grams)")
 
         if blood_pressure is None:
-            warnings.append("Blood pressure not detected.")
+            warnings.append(make_warning("MISSING_BLOOD_PRESSURE", "extracted_data.blood_pressure", "Blood pressure not detected."))
         if heart_rate is None:
-            warnings.append("Heart rate/pulse not detected.")
+            warnings.append(make_warning("MISSING_HEART_RATE", "extracted_data.heart_rate", "Heart rate/pulse not detected."))
         if temperature is None:
-            warnings.append("Temperature not detected.")
+            warnings.append(make_warning("MISSING_TEMPERATURE", "extracted_data.temperature", "Temperature not detected."))
 
         return {
             "patient": {"name": find_patient_name(document), "patient_id": None},

@@ -1,0 +1,11 @@
+{
+  "image": "samples/images/medical_certificate.png",
+  "document_type": "medical_certificate",
+  "fields": {
+    "patient.name.value": "John Doe",
+    "extracted_data.examination_date.value": "10/31/2026",
+    "extracted_data.issue_date.value": "11/01/2026",
+    "extracted_data.diagnosis_reason.value": "Viral infection",
+    "extracted_data.fitness_statement.value": "Fit to work"
+  }
+}

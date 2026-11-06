@@ -1,0 +1,9 @@
+{
+  "image": "samples/images/laboratory_result.png",
+  "document_type": "laboratory_result",
+  "fields": {
+    "patient.name.value": "John Doe",
+    "extracted_data.tests": 2,
+    "extracted_data.tests.0.result": "14.2"
+  }
+}

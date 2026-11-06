@@ -35,6 +35,7 @@ class OCRResult(BaseModel):
     document_date: Optional[Dict[str, Any]] = None
     extracted_data: Dict[str, Any] = Field(default_factory=dict)
     warnings: List[str] = Field(default_factory=list)
+    review: Dict[str, Any] = Field(default_factory=lambda: {"required": True, "reviewed_by": None, "reviewed_at": None})
 
 
 class ResultFormatter:

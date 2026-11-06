@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import find_document_date, find_patient_name, iter_lines, make_field
 
@@ -42,7 +43,7 @@ class DentalExtractor(BaseExtractor):
 
         if not teeth:
             warnings.append(
-                "No tooth/condition pairs could be extracted; detailed odontogram parsing may require layout-specific review."
+                make_warning("NO_DENTAL_FINDINGS", "extracted_data.teeth", "No tooth/condition pairs could be extracted; detailed odontogram parsing may require layout-specific review.")
             )
 
         return {

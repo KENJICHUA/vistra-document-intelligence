@@ -20,6 +20,7 @@ from .extractors import (
 from .formatter import OCRResult, ResultFormatter
 from .loader import DocumentLoader
 from .preprocessor import ImagePreprocessor
+from .validation import validate_result
 
 
 class OCRPipeline:
@@ -68,6 +69,10 @@ class OCRPipeline:
         result.document_date = extraction.get("document_date")
         result.extracted_data = extraction.get("extracted_data", {})
         result.warnings = extraction.get("warnings", [])
+
+        validation_warnings = validate_result(result)
+        result.warnings = validation_warnings
+        result.status = "needs_review" if result.warnings else "processed"
 
         return result
 

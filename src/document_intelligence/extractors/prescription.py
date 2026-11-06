@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import find_document_date, find_patient_name, iter_lines, make_field
 
@@ -29,7 +30,7 @@ class PrescriptionExtractor(BaseExtractor):
 
         medications = self._extract_medications(lines)
         if not medications:
-            warnings.append("No medication rows could be extracted.")
+            warnings.append(make_warning("NO_MEDICATIONS", "extracted_data.medications", "No medication rows could be extracted."))
 
         patient_name = find_patient_name(document)
 

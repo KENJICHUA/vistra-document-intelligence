@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import DATE_PATTERNS, find_document_date, find_patient_name, iter_lines, make_field
 
@@ -13,7 +14,7 @@ class ImagingReportExtractor(BaseExtractor):
     document_type = "imaging_report"
 
     _MODALITIES = [
-        "ultrasound", "x-ray", "xray", "ct scan", "ct", "mri", "mammogram",
+        "ultrasound", "jltrasound", "ltrasound", "x-ray", "xray", "ct scan", "ct", "mri", "mammogram",
         "radiograph", "echocardiogram", "ecg", "eeg",
     ]
 
@@ -36,15 +37,15 @@ class ImagingReportExtractor(BaseExtractor):
             report_date = find_document_date(document)
 
         findings = self._section_text(lines, ["findings"])
-        impression = self._section_text(lines, ["impression", "conclusion", "interpretation"])
+        impression = self._section_text(lines, ["impression", "mpression", "mression", "conclusion", "interpretation"])
         provider = self._find_labeled_text(lines, ["radiologist", "reported by", "physician", "doctor", "dr."])
 
         if modality is None:
-            warnings.append("Imaging modality not detected.")
+            warnings.append(make_warning("MISSING_MODALITY", "extracted_data.modality", "Imaging modality not detected."))
         if findings is None:
-            warnings.append("Findings section not detected.")
+            warnings.append(make_warning("MISSING_FINDINGS", "extracted_data.findings", "Findings section not detected."))
         if impression is None:
-            warnings.append("Impression/conclusion not detected.")
+            warnings.append(make_warning("MISSING_IMPRESSION", "extracted_data.impression", "Impression/conclusion not detected."))
 
         return {
             "patient": {"name": find_patient_name(document), "patient_id": None},
@@ -120,13 +121,15 @@ class ImagingReportExtractor(BaseExtractor):
                     if label in lowered:
                         idx = lowered.find(label) + len(label)
                         remainder = text[idx:].strip(" :.-")
-                        if remainder:
+                        if remainder and remainder not in collected:
                             collected.append(remainder)
                 continue
             if collecting:
-                if any(stop in lowered for stop in ["impression", "conclusion", "recommendation", "radiologist"]):
+                if re.match(r"^(impression|mpression|mression|conclusion|recommendation|radiologist)\b", text, flags=re.IGNORECASE):
                     break
-                if text:
+                if any(stop in lowered for stop in ["impression", "mpression", "mression", "conclusion", "recommendation", "radiologist"]):
+                    break
+                if text and text not in collected:
                     collected.append(text)
         if not collected:
             return None

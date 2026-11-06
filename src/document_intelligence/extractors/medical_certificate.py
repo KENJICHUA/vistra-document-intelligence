@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
+from ..validation import make_warning
 from .base import BaseExtractor
 from .common import DATE_PATTERNS, find_document_date, find_patient_name, iter_lines, make_field
 
@@ -17,10 +18,18 @@ class MedicalCertificateExtractor(BaseExtractor):
 
         patient_name = find_patient_name(document)
         issue_date = self._find_labeled_date(
-            document, ["issue", "issued", "certificate date", "date issued", "date of issue"]
+            document, ["issue", "issued", "certificate date", "date issued", "date of issue", "ssue", "ssue date"]
         )
         if issue_date is None:
-            issue_date = find_document_date(document)
+            dates = []
+            for page_number, line in iter_lines(document):
+                text = str(line.get("text", "")).strip()
+                for pattern in DATE_PATTERNS:
+                    match = re.search(pattern, text, flags=re.IGNORECASE)
+                    if match:
+                        dates.append(make_field(match.group(0), line.get("confidence", 0.0), page_number, text))
+            if dates:
+                issue_date = dates[-1]
 
         examination_date = self._find_labeled_date(
             document, ["examination", "examined", "date of examination", "date examined"]
@@ -57,13 +66,13 @@ class MedicalCertificateExtractor(BaseExtractor):
         }
 
         if patient_name is None:
-            warnings.append("Patient name not detected.")
+            warnings.append(make_warning("MISSING_PATIENT_NAME", "patient.name", "Patient name not detected."))
         if examination_date is None and issue_date is None:
-            warnings.append("No examination or issue date detected.")
+            warnings.append(make_warning("MISSING_DATES", "extracted_data", "No examination or issue date detected."))
         if diagnosis_reason is None:
-            warnings.append("No stated diagnosis or reason detected.")
+            warnings.append(make_warning("MISSING_DIAGNOSIS", "extracted_data.diagnosis_reason", "No stated diagnosis or reason detected."))
         if fitness_statement is None:
-            warnings.append("No fitness statement detected.")
+            warnings.append(make_warning("MISSING_FITNESS_STATEMENT", "extracted_data.fitness_statement", "No fitness statement detected."))
 
         return {
             "patient": {"name": patient_name, "patient_id": None},
